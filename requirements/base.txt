@@ -1,2 +1,4 @@
 Django==1.10.7
 psycopg2==2.7.3
+django_model_utils==3.0.0
+django-allauth==0.32.0
