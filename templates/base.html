@@ -11,13 +11,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="http://eliteadmin.themedesigner.in/demos/plugins/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://eliteadmin.themedesigner.in/demos/images/favicon.png">
     <title>Elite Admin - is a responsive admin template</title>
     <!-- Bootstrap Core CSS -->
     <link href='{% static "bootstrap/dist/css/bootstrap.min.css" %}' rel="stylesheet">
-    <link href="http://eliteadmin.themedesigner.in/demos/plugins/bower_components/bootstrap-extension/css/bootstrap-extension.css" rel="stylesheet">
+    <link href='{% static "bower_components/bootstrap-extension/css/bootstrap-extension.css" %}' rel="stylesheet">
+
+    <link href='{% static "bower_components/toast-master/css/jquery.toast.css" %}' rel="stylesheet">
     <!-- This is Sidebar menu CSS -->
-    <link href="http://eliteadmin.themedesigner.in/demos/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <link href='{% static "bower_components/sidebar-nav/dist/sidebar-nav.min.css" %}' rel="stylesheet">
     <!-- This is a Animation CSS -->
     <link href='{% static "css/animate.css" %}' rel="stylesheet">
     <!-- This is a Custom CSS -->
@@ -30,22 +32,26 @@
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js" %}'></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js" %}'></script>
       <![endif]-->
 </head>
 
 <body class="fix-sidebar">
     {% block content %}{% endblock %}
+    <footer class="footer text-center"> 2017 &copy; Django Meeting by HCMFront. </footer>
     <!-- /#wrapper -->
     <!-- jQuery -->
-    <script src="http://eliteadmin.themedesigner.in/demos/plugins/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src='{% static "bower_components/jquery/dist/jquery.min.js" %}'></script>
     <!-- Bootstrap Core JavaScript -->
     <script src='{% static "bootstrap/dist/js/tether.min.js" %}'></script>
     <script src='{% static "bootstrap/dist/js/bootstrap.min.js" %}'></script>
-    <script src="http://eliteadmin.themedesigner.in/demos/plugins/bower_components/bootstrap-extension/js/bootstrap-extension.min.js"></script>
+    <script src='{% static "bower_components/bootstrap-extension/js/bootstrap-extension.min.js" %}'></script>
     <!-- Sidebar menu plugin JavaScript -->
-    <script src="http://eliteadmin.themedesigner.in/demos/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js"></script>
+    <script src='{% static "bower_components/sidebar-nav/dist/sidebar-nav.min.js" %}'></script>
+    <!-- Toast JavaScript -->
+    <script src='{% static "bower_components/toast-master/js/jquery.toast.js" %}'></script>
+    <script src='{% static "js/toastr.js" %}'></script>
     <!--Slimscroll JavaScript For custom scroll-->
     <script src='{% static "js/jquery.slimscroll.js" %}'></script>
     <!--Wave Effects -->
