@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load meeting %}
+{% block content %}
+    <!-- Preloader -->
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div>
+    <div id="wrapper">
+        {% include "meeting/top_menu.html" %}
+        {% include "meeting/left_menu.html" %}
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <!-- .page title -->
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title">{% trans "Meeting rooms" %}</h4>
+                    </div>
+                    <!-- /.page title -->
+                    <!-- .breadcrumb -->
+                    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                        <a href="https://themeforest.net/item/elite-admin-responsive-dashboard-web-app-kit-/16750820" target="_blank" class="btn btn-danger pull-right m-l-20 btn-rounded btn-outline hidden-xs hidden-sm waves-effect waves-light">Buy Now</a>
+                        <ol class="breadcrumb">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">{% trans "Meeting rooms" %}</li>
+                        </ol>
+                    </div>
+                    <!-- /.breadcrumb -->
+                </div>
+                <!-- .row -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="white-box">
+                            <a href="{% url 'meeting_add' %}" class="btn btn-success waves-effect waves-light m-r-10 pull-right">{% trans "Add meeting room" %}</a>
+                            <h3 class="box-title">{% trans "List of meeting rooms" %}</h3>
+                            <br />
+                            <div class="white-box">
+                            <h3 class="box-title m-b-0">Simple Toastr Alerts</h3>
+                            <p class="text-muted m-b-20">You can use four different alert <code>info, warning, success, and error</code> message.</p>
+                            <div class="button-box">
+                                <button class="tst1 btn btn-info">Info Message</button>
+                                <button class="tst2 btn btn-warning">Warning Message</button>
+                                <button class="tst3 btn btn-success">Success Message</button>
+                                <button class="tst4 btn btn-danger">Danger Message</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans "Name" %}</th>
+                                            <th>{% trans "Location" %}</th>
+                                            <th>{% trans "Capacity" %}</th>
+                                            <th>{% trans "Status" %}</th>
+                                            <th>{% trans "Options" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for room in rooms %}
+                                        <tr>
+                                            <td><a href="javascript:void(0)">{{ room.name }}</a></td>
+                                            <td>{{ room.location }}</td>
+                                            <td><span class="text-muted"><i class="fa fa-clock-o"></i> {{ room.capacity }}</span></td>
+                                            <td>
+                                                <div class="label label-table label-{{ room|status }}">{{ room.status }}</div>
+                                            </td>
+                                            <td class="text-nowrap">
+                                                <a href="{% url 'meeting_edit' room.id %}" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
+                                                <a href="#" data-toggle="tooltip" data-original-title="Close"> <i class="fa fa-close text-danger m-r-10"></i> </a>
+                                                <a href="#" data-toggle="tooltip" data-original-title="Search"> <i class="fa fa-eye text-inverse"></i> </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="jq-toast-wrap top-right">
+                    <div class="jq-toast-single jq-has-icon jq-icon-info" style="text-align: left; display: none;">
+                        <span class="jq-toast-loader jq-toast-loaded" style="-webkit-transition: width 2.6s ease-in; -o-transition: width 2.6s ease-in; transition: width 2.6s ease-in;                       background-color: #ff6849;">
+                        </span><span class="close-jq-toast-single">×</span>
+                        <h2 class="jq-toast-heading">
+                        Welcome to my Elite admin</h2>Use the predefined ones, or specify a custom position object.
+                    </div>
+                </div>
+                <!-- /.row -->
+                {% include "meeting/right_menu.html" %}
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+{% endblock %}
