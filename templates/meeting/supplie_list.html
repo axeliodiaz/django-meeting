@@ -17,11 +17,11 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">{% trans "Delete meeting room" %}</h4>
+                        <h4 class="modal-title" id="myModalLabel">{% trans "Delete supplie" %}</h4>
                     </div>
                     <div class="modal-body">
-                        {% trans 'Are you sure to delete the meeting room'%} "<span id=name_room></span>"?
-                        <input type="hidden" name="room_to_delete">
+                        {% trans 'Are you sure to delete the supplie'%} "<span id=name_supplie></span>"?
+                        <input type="hidden" name="supplie_to_delete">
                     </div>
                     <form class="form-material" method="POST" id="confirm_delete">{% csrf_token %}
                         <div class="modal-footer">
@@ -40,7 +40,7 @@
                 <div class="row bg-title">
                     <!-- .page title -->
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                        <h4 class="page-title">{% trans "Meeting rooms" %}</h4>
+                        <h4 class="page-title">{% trans "Supplies" %}</h4>
                     </div>
                     <!-- /.page title -->
                     <!-- .breadcrumb -->
@@ -48,7 +48,7 @@
                         <a href="https://themeforest.net/item/elite-admin-responsive-dashboard-web-app-kit-/16750820" target="_blank" class="btn btn-danger pull-right m-l-20 btn-rounded btn-outline hidden-xs hidden-sm waves-effect waves-light">Buy Now</a>
                         <ol class="breadcrumb">
                             <li><a href="#">Dashboard</a></li>
-                            <li class="active">{% trans "Meeting rooms" %}</li>
+                            <li class="active">{% trans "Supplies" %}</li>
                         </ol>
                     </div>
                     <!-- /.breadcrumb -->
@@ -57,34 +57,26 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="white-box">
-                            <a href="{% url 'meeting_add' %}" class="btn btn-success waves-effect waves-light m-r-10 pull-right">{% trans "Add meeting room" %}</a>
-                            <h3 class="box-title">{% trans "List of meeting rooms" %}</h3>
+                            <a href="{% url 'supplie_add' %}" class="btn btn-success waves-effect waves-light m-r-10 pull-right">{% trans "Add supplie" %}</a>
+                            <h3 class="box-title">{% trans "List of supplies" %}</h3>
                             <br />
-                            {% if rooms.exists %}
+                            {% if supplies.exists %}
                             <div class="white-box">
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <th>{% trans "Name" %}</th>
-                                            <th>{% trans "Location" %}</th>
-                                            <th>{% trans "Capacity" %}</th>
-                                            <th>{% trans "Status" %}</th>
-                                            <th>{% trans "Options" %}</th>
+                                            <th>{% trans "Optioins" %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for room in rooms %}
+                                        {% for supplie in supplies %}
                                         <tr>
-                                            <td><a href="javascript:void(0)">{{ room.name }}</a></td>
-                                            <td>{{ room.location }}</td>
-                                            <td><span class="text-muted"><i class="fa fa-clock-o"></i> {{ room.capacity }}</span></td>
-                                            <td>
-                                                <div class="label label-table label-{{ room|status }}">{{ room.status }}</div>
-                                            </td>
+                                            <td><a href="javascript:void(0)">{{ supplie.name }}</a></td>
                                             <td class="text-nowrap">
-                                                <a href="{% url 'meeting_edit' room.id %}" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
-                                                <a class="delete_room" href="#" data-id="{{ room.id }}" data-name="{{ room.name }}" data-toggle="tooltip" data-original-title="Close"> <i class="fa fa-close text-danger m-r-10"></i> </a>
+                                                <a href="{% url 'supplie_edit' supplie.id %}" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
+                                                <a class="delete_supplie" href="#" data-id="{{ supplie.id }}" data-name="{{ supplie.name }}" data-toggle="tooltip" data-original-title="Close"> <i class="fa fa-close text-danger m-r-10"></i> </a>
                                                 <a href="#" data-toggle="tooltip" data-original-title="Search"> <i class="fa fa-eye text-inverse"></i> </a>
                                             </td>
                                         </tr>
@@ -94,7 +86,7 @@
                             </div>
                         </div>
                         {% else %}
-                        <h1 class="box-title">{% trans "There is no registered meeting room" %}</h1>
+                        <h1 class="box-title">{% trans "There is no registered supplie" %}</h1>
                         {% endif %}
                     </div>
                 </div>
@@ -109,11 +101,11 @@
 {% endblock %}
 {% block extra_js %}
     <script type="text/javascript">
-        $(".delete_room").click(function() {
-            $('#room_to_delete').val($(this).attr('data-id'));
-            $('#name_room').text($(this).attr('data-name'));
-            $('#name_room').text($(this).attr('data-name'));
-            url = '/meeting/' + $(this).attr('data-id') + '/delete/';
+        $(".delete_supplie").click(function() {
+            $('#supplie_to_delete').val($(this).attr('data-id'));
+            $('#name_supplie').text($(this).attr('data-name'));
+            $('#name_supplie').text($(this).attr('data-name'));
+            url = '/supplie/' + $(this).attr('data-id') + '/delete/';
             $("#confirm_delete").attr("action", url);
             $('#modal_delete_room').modal('show');
         });

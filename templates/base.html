@@ -58,6 +58,31 @@
     <script src='{% static "js/waves.js" %}'></script>
     <!-- Custom Theme JavaScript -->
     <script src='{% static "js/custom.min.js" %}'></script>
+    {% block extra_js %}{% endblock %}
+    <script type="text/javascript">
+    function notification() {
+
+        $.toast({
+            heading: 'Welcomeeee to my Elite admin',
+            text: 'Use the predefined ones, or specify a custom position object.',
+            position: 'top-right',
+            loaderBg: '#ff6849',
+            icon: 'info',
+            hideAfter: 3000,
+            stack: 6
+        });
+        for (var i = 0; i < messages.length; i++) {
+            $.toast({
+                heading: 'Welcomeeee to my Elite admin',
+                text: 'Use the predefined ones, or specify a custom position object.',
+                position: 'top-right',
+                loaderBg: '#ff6849',
+                icon: 'info',
+                hideAfter: 3000,
+                stack: 6
+            });
+        }
+    </script>
 
 </body>
 

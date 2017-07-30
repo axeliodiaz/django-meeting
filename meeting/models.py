@@ -26,7 +26,7 @@ class Room(models.Model):
         _('confirmed'))
 
     name = models.CharField(max_length=100)
-    location = models.TextField(blank=True)
+    location = models.CharField(max_length=256)
     capacity = models.PositiveIntegerField(blank=True, null=True)
     supplie = models.ManyToManyField(Supplie)
     status = models.CharField(choices=STATUS, default=STATUS.available,

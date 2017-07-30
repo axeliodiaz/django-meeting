@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Room
+from .models import Room, Supplie
 
 
 class RoomForm(ModelForm):
@@ -16,3 +16,14 @@ class RoomForm(ModelForm):
         self.fields['capacity'].widget.attrs['class'] = 'form-control'
         self.fields['supplie'].widget.attrs['class'] = 'form-control'
         self.fields['status'].widget.attrs['class'] = 'form-control'
+
+
+class SupplieForm(ModelForm):
+    class Meta:
+        model = Supplie
+        fields = ['name', 'description']
+
+    def __init__(self, *args, **kwargs):
+        super(SupplieForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['class'] = 'form-control'
+        self.fields['description'].widget.attrs['class'] = 'form-control'

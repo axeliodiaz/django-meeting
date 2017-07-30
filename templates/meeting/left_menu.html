@@ -1,3 +1,4 @@
+{% load i18n %}
 <!-- Left navbar-sidebar -->
 <div class="navbar-default sidebar" role="navigation">
     <div class="sidebar-nav navbar-collapse slimscrollsidebar">
@@ -13,40 +14,15 @@
                 <!-- / Search input-group this is only view in mobile-->
             </li>
             <!-- User profile-->
-            <li class="user-pro">
-                <a href="starter-page.html#" class="waves-effect"><img src="http://eliteadmin.themedesigner.in/demos/plugins/images/users/varun.jpg" alt="user-img" class="img-circle"> <span class="hide-menu"> Steve Gection<span class="fa arrow"></span></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="javascript:void(0)"><i class="ti-user"></i> My Profile</a></li>
-                    <li><a href="javascript:void(0)"><i class="ti-wallet"></i> My Balance</a></li>
-                    <li><a href="javascript:void(0)"><i class="ti-email"></i> Inbox</a></li>
-                    <li><a href="javascript:void(0)"><i class="ti-settings"></i> Account Setting</a></li>
-                    <li><a href="javascript:void(0)"><i class="fa fa-power-off"></i> Logout</a></li>
-                </ul>
-            </li>
-            <!-- User profile-->
             <li class="nav-small-cap m-t-10">--- Main Menu</li>
             <li><a href="javascript:void(0)" class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">Link type </span></a> </li>
             <li>
-                <a href="javascript:void(0)" class="waves-effect active"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">Dropdown Link<span class="fa arrow"></span><span class="label label-rouded label-purple pull-right">2</span></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="javascript:void(0)">Link one</a></li>
-                    <li><a href="javascript:void(0)">Link Two</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="javascript:void(0)" class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">Multi Dropdown<span class="fa arrow"></span></span></a>
-                <ul class="nav nav-second-level">
-                    <li> <a href="javascript:void(0)">Second Level Item</a> </li>
-                    <li> <a href="javascript:void(0)">Second Level Item</a> </li>
-                    <li>
-                        <a href="javascript:void(0)" class="waves-effect">Third Level <span class="fa arrow"></span></a>
-                        <ul class="nav nav-third-level">
-                            <li> <a href="javascript:void(0)">Third Level Item</a> </li>
-                            <li> <a href="javascript:void(0)">Third Level Item</a> </li>
-                            <li> <a href="javascript:void(0)">Third Level Item</a> </li>
-                            <li> <a href="javascript:void(0)">Third Level Item</a> </li>
-                        </ul>
-                    </li>
+                <a class="waves-effect active"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Room meeting" %}<span class="fa arrow"></span></span></a>
+                <ul class="nav nav-second-level" aria-expanded="false">
+                    <li><a href="{% url 'meeting_list' %}">{% trans "Meeting room list" %}</a></li>
+                    <li><a href="{% url 'meeting_add' %}">{% trans "New meeting room" %}</a></li>
+                    <li><a href="{% url 'supplie_list' %}">{% trans "Supplie list" %}</a></li>
+                    <li><a href="{% url 'supplie_add' %}">{% trans "New Supplie" %}</a></li>
                 </ul>
             </li>
         </ul>
