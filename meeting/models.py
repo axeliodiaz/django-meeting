@@ -36,7 +36,7 @@ class Room(models.Model):
         return u"{}".format(self.name)
 
 
-class Reserve(TimeStampedModel, TimeFramedModel):
+class Reservation(TimeStampedModel, TimeFramedModel):
     room = models.ForeignKey(Room)
     capacity = models.PositiveIntegerField(blank=True, null=True)
     supplie = models.ManyToManyField(Supplie)

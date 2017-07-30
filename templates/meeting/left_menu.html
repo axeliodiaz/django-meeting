@@ -20,11 +20,18 @@
                 <a class="waves-effect active"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Room meeting" %}<span class="fa arrow"></span></span></a>
                 <ul class="nav nav-second-level" aria-expanded="false">
                     <li><a href="{% url 'meeting_list' %}">{% trans "Meeting room list" %}</a></li>
-                    <li><a href="{% url 'meeting_add' %}">{% trans "New meeting room" %}</a></li>
+                    {% if request.user.is_staff %}<li><a href="{% url 'meeting_add' %}">{% trans "New meeting room" %}</a></li>{% endif %}
+                </ul>
+            </li>
+            {% if request.user.is_staff %}
+            <li>
+                <a class="waves-effect active"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Supplies" %}<span class="fa arrow"></span></span></a>
+                <ul class="nav nav-second-level" aria-expanded="false">
                     <li><a href="{% url 'supplie_list' %}">{% trans "Supplie list" %}</a></li>
                     <li><a href="{% url 'supplie_add' %}">{% trans "New Supplie" %}</a></li>
                 </ul>
             </li>
+            {% endif %}
         </ul>
     </div>
 </div>

@@ -24,10 +24,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
     url(r'^meeting/', include('meeting.urls')),
-    url(r'^supplie/(?P<pk>\d+)/change/', SupplieEditView.as_view(), name='supplie_edit'),
-    url(r'^supplie/(?P<pk>\d+)/delete/', SupplieDeleteView.as_view(), name='supplie_delete'),
-    url(r'^supplie/add/', SupplieCreateView.as_view(), name='supplie_add'),
-    url(r'^supplie/list/', SupplieListView.as_view(), name='supplie_list'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

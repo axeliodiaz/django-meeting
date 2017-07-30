@@ -12,7 +12,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="http://eliteadmin.themedesigner.in/demos/images/favicon.png">
-    <title>Elite Admin - is a responsive admin template</title>
+    <title>Django Meeting</title>
     <!-- Bootstrap Core CSS -->
     <link href='{% static "bootstrap/dist/css/bootstrap.min.css" %}' rel="stylesheet">
     <link href='{% static "bower_components/bootstrap-extension/css/bootstrap-extension.css" %}' rel="stylesheet">
@@ -59,31 +59,6 @@
     <!-- Custom Theme JavaScript -->
     <script src='{% static "js/custom.min.js" %}'></script>
     {% block extra_js %}{% endblock %}
-    <script type="text/javascript">
-    function notification() {
-
-        $.toast({
-            heading: 'Welcomeeee to my Elite admin',
-            text: 'Use the predefined ones, or specify a custom position object.',
-            position: 'top-right',
-            loaderBg: '#ff6849',
-            icon: 'info',
-            hideAfter: 3000,
-            stack: 6
-        });
-        for (var i = 0; i < messages.length; i++) {
-            $.toast({
-                heading: 'Welcomeeee to my Elite admin',
-                text: 'Use the predefined ones, or specify a custom position object.',
-                position: 'top-right',
-                loaderBg: '#ff6849',
-                icon: 'info',
-                hideAfter: 3000,
-                stack: 6
-            });
-        }
-    </script>
-
 </body>
 
 </html>

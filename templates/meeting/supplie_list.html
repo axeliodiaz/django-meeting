@@ -105,7 +105,7 @@
             $('#supplie_to_delete').val($(this).attr('data-id'));
             $('#name_supplie').text($(this).attr('data-name'));
             $('#name_supplie').text($(this).attr('data-name'));
-            url = '/supplie/' + $(this).attr('data-id') + '/delete/';
+            url = '/meeting/supplie/' + $(this).attr('data-id') + '/delete/';
             $("#confirm_delete").attr("action", url);
             $('#modal_delete_room').modal('show');
         });
