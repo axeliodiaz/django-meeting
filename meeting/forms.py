@@ -27,3 +27,19 @@ class SupplieForm(ModelForm):
         super(SupplieForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs['class'] = 'form-control'
         self.fields['description'].widget.attrs['class'] = 'form-control'
+
+
+class SearchRoomForm(ModelForm):
+    class Meta:
+        model = Room
+        fields = ['capacity', 'supplie']
+
+    def __init__(self, *args, **kwargs):
+        super(SearchRoomForm, self).__init__(*args, **kwargs)
+        initial = kwargs.get('initial', {})
+        self.fields['capacity'].widget.attrs['class'] = 'form-control col-md-6'
+        self.fields['supplie'].widget.attrs['class'] = 'form-control col-md-6'
+        self.fields['capacity'].required = False
+        self.fields['supplie'].required = False
+        initial['capacity'] = 0
+        kwargs['initial'] = initial

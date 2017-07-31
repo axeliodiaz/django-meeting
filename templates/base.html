@@ -17,6 +17,10 @@
     <link href='{% static "bootstrap/dist/css/bootstrap.min.css" %}' rel="stylesheet">
     <link href='{% static "bower_components/bootstrap-extension/css/bootstrap-extension.css" %}' rel="stylesheet">
 
+    <!-- Select2 -->
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <!-- Toasts -->
     <link href='{% static "bower_components/toast-master/css/jquery.toast.css" %}' rel="stylesheet">
     <!-- This is Sidebar menu CSS -->
     <link href='{% static "bower_components/sidebar-nav/dist/sidebar-nav.min.css" %}' rel="stylesheet">
@@ -41,6 +45,7 @@
     {% block content %}{% endblock %}
     <footer class="footer text-center"> 2017 &copy; Django Meeting by HCMFront. </footer>
     <!-- /#wrapper -->
+
     <!-- jQuery -->
     <script src='{% static "bower_components/jquery/dist/jquery.min.js" %}'></script>
     <!-- Bootstrap Core JavaScript -->
@@ -52,12 +57,45 @@
     <!-- Toast JavaScript -->
     <script src='{% static "bower_components/toast-master/js/jquery.toast.js" %}'></script>
     <script src='{% static "js/toastr.js" %}'></script>
+
+    <!--slimscroll JavaScript -->
+    <script src='{% static "js/jquery.slimscroll.js" %}'></script>
+    <!--Wave Effects -->
+    <script src='{% static "js/waves.js" %}'></script>
+    <!-- MultiSelect -->
+
+    <!--Style Switcher -->
+    <script src="http://eliteadmin.themedesigner.in/demos/plugins/bower_components/styleswitcher/jQuery.style.switcher.js"></script>
+    <!-- Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
+
     <!--Slimscroll JavaScript For custom scroll-->
     <script src='{% static "js/jquery.slimscroll.js" %}'></script>
     <!--Wave Effects -->
     <script src='{% static "js/waves.js" %}'></script>
     <!-- Custom Theme JavaScript -->
     <script src='{% static "js/custom.min.js" %}'></script>
+    <script type="text/javascript">
+        $('select').select2();
+    </script>
+
+    <script type="text/javascript">
+        {% for message in messages %}
+        show_notification('{% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}', '{{ message.tags }}');
+        {% endfor %}
+        function show_notification(message, status) {
+            $.toast({
+                heading: 'A new ' + status + ' message!',
+                text: message,
+                position: 'top-right',
+                loaderBg: '#ff6849',
+                icon: status,
+                hideAfter: 3000,
+                stack: 6
+            });
+        }
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 

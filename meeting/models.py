@@ -27,8 +27,9 @@ class Room(models.Model):
 
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=256)
-    capacity = models.PositiveIntegerField(blank=True, null=True)
-    supplie = models.ManyToManyField(Supplie)
+    capacity = models.PositiveIntegerField(blank=True, null=True,
+                                           help_text=_("Number of people"))
+    supplie = models.ManyToManyField(Supplie, help_text=_("Select the supplies"))
     status = models.CharField(choices=STATUS, default=STATUS.available,
                               max_length=30)
 
