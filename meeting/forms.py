@@ -1,7 +1,8 @@
 from django.forms import ModelForm
+from django.forms.widgets import HiddenInput
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Room, Supplie
+from .models import Room, Supplie, Reservation
 
 
 class RoomForm(ModelForm):
@@ -43,3 +44,30 @@ class SearchRoomForm(ModelForm):
         self.fields['supplie'].required = False
         initial['capacity'] = 0
         kwargs['initial'] = initial
+
+
+class ReservationForm(ModelForm):
+    READONLY_FIELDS = ['room']
+
+    class Meta:
+        model = Reservation
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(ReservationForm, self).__init__(*args, **kwargs)
+        room = self.initial.get('room')
+        self.fields['capacity'].widget.attrs['class'] = 'form-control'
+        self.fields['supplie'].widget.attrs['class'] = 'form-control'
+        self.fields['date'].widget.attrs['class'] = 'form-control mydatepicker'
+        self.fields['date'].widget.attrs['id'] = 'datepicker'
+        self.fields['start'].widget.attrs['class'] = 'form-control clockpicker'
+        self.fields['end'].widget.attrs['class'] = 'form-control clockpicker'
+        self.fields['room'].disabled = True
+
+    def clean(self):
+        cleaned_data = super(ReservationForm, self).clean()
+        capacity = self.cleaned_data.get('capacity', 0)
+        message_error = _('Capacity must be greater than 0')
+        if capacity <= 0:
+            self.add_error('capacity', message_error)
+        return cleaned_data

@@ -1,15 +1,16 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, View
 from django.views.generic.edit import (UpdateView, CreateView, DeleteView,
                                        FormMixin)
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
 from django.template.defaultfilters import urlencode
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
-from .models import Room, Supplie
-from .forms import RoomForm, SupplieForm, SearchRoomForm
+from .models import Room, Supplie, Reservation
+from .forms import RoomForm, SupplieForm, SearchRoomForm, ReservationForm
 
 from braces.views import (LoginRequiredMixin, SuperuserRequiredMixin)
 
@@ -57,10 +58,16 @@ class RoomListView(LoginRequiredMixin, FormListView):
     paginate_by = 10
     context_object_name = "rooms"
     form_class = SearchRoomForm
+    form2 = ReservationForm
+
+    def get_context_data(self, **kwargs):
+        context = super(RoomListView, self).get_context_data(**kwargs)
+        context['second_form'] = self.form2()
+        return context
 
 
-class RoomEditView(SuccessMessageMixin, LoginRequiredMixin, SuperuserRequiredMixin,
-                   UpdateView):
+class RoomEditView(SuccessMessageMixin, LoginRequiredMixin,
+                   SuperuserRequiredMixin, UpdateView):
     template_name = 'meeting/meeting_edit.html'
     form_class = RoomForm
     success_url = reverse_lazy('meeting_list')
@@ -71,19 +78,19 @@ class RoomEditView(SuccessMessageMixin, LoginRequiredMixin, SuperuserRequiredMix
         return obj
 
 
-class RoomCreateView(SuccessMessageMixin, LoginRequiredMixin, SuperuserRequiredMixin,
-                     CreateView):
+class RoomCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                     SuperuserRequiredMixin, CreateView):
     template_name = 'meeting/meeting_edit.html'
     form_class = RoomForm
     success_url = reverse_lazy('meeting_list')
-    success_message = _("%(name)s was saved successfully.")
+    success_message = _("%(name)s was created successfully.")
 
 
-class RoomDeleteView(SuccessMessageMixin, LoginRequiredMixin, SuperuserRequiredMixin,
-                     DeleteView):
+class RoomDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                     SuperuserRequiredMixin, DeleteView):
     model = Room
     success_url = reverse_lazy('meeting_list')
-    success_message = _("%(name)s was saved successfully.")
+    success_message = _("%(name)s was deleted successfully.")
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -101,8 +108,8 @@ class SupplieListView(LoginRequiredMixin, ListView):
         )
 
 
-class SupplieEditView(SuccessMessageMixin, LoginRequiredMixin, SuperuserRequiredMixin,
-                      UpdateView):
+class SupplieEditView(SuccessMessageMixin, LoginRequiredMixin,
+                      SuperuserRequiredMixin, UpdateView):
     template_name = 'meeting/supplie_edit.html'
     form_class = SupplieForm
     success_url = reverse_lazy('supplie_list')
@@ -113,19 +120,99 @@ class SupplieEditView(SuccessMessageMixin, LoginRequiredMixin, SuperuserRequired
         return obj
 
 
-class SupplieCreateView(SuccessMessageMixin, LoginRequiredMixin, SuperuserRequiredMixin,
-                        CreateView):
+class SupplieCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                        SuperuserRequiredMixin, CreateView):
     template_name = 'meeting/supplie_edit.html'
     form_class = SupplieForm
     success_url = reverse_lazy('supplie_list')
-    success_message = _("%(name)s was saved successfully.")
+    success_message = _("%(name)s was created successfully.")
 
 
-class SupplieDeleteView(SuccessMessageMixin, LoginRequiredMixin, SuperuserRequiredMixin,
-                        DeleteView):
+class SupplieDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                        SuperuserRequiredMixin, DeleteView):
     model = Supplie
     success_url = reverse_lazy('supplie_list')
-    success_message = _("%(name)s was saved successfully.")
+    success_message = _("%(name)s was deleted successfully.")
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
+
+
+class ReservationListView(LoginRequiredMixin, ListView):
+    model = Reservation
+    template_name = "meeting/reservation_list.html"
+    paginate_by = 10
+    context_object_name = "reservations"
+
+    def get_queryset(self):
+        return Reservation.objects.filter(
+        ).order_by(
+        )
+
+
+class ReservationEditView(SuccessMessageMixin, LoginRequiredMixin,
+                          SuperuserRequiredMixin, UpdateView):
+    template_name = 'meeting/reservation_edit.html'
+    form_class = ReservationForm
+    success_url = reverse_lazy('reservation_list')
+    success_message = _("%(name)s was saved successfully.")
+
+    def get_object(self, queryset=None):
+        obj = Reservation.objects.get(id=self.kwargs['pk'])
+        return obj
+
+
+class ReservationCreateView2(LoginRequiredMixin, CreateView):
+    template_name = 'meeting/reservation_edit.html'
+    form_class = ReservationForm
+    success_url = reverse_lazy('meeting_list')
+    success_message = _("%(name)s was created successfully.")
+
+    def get(self, request, *args, **kwargs):
+        room = Room.objects.filter(id=self.kwargs['pk'])
+        if not room.exists():
+            error_message = _('There is no room to reserve')
+            messages.add_message(request, messages.ERROR, error_message)
+            return redirect(reverse_lazy('meeting_list'))
+        else:
+            room = room.first()
+        supplie = Supplie.objects.filter(room=room)
+        self.initial.update({'room': room})
+        form = self.form_class(initial=self.initial)
+        form.fields["supplie"].queryset = supplie
+        context = {'form': form, 'room': room}
+        return render(request, self.template_name, context)
+
+
+class ReservationCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'meeting/reservation_edit.html'
+    form_class = ReservationForm
+    success_url = reverse_lazy('meeting_list')
+    success_message = _("%(name)s was created successfully.")
+
+    def get(self, request, *args, **kwargs):
+        room = Room.objects.filter(id=self.kwargs['pk'])
+        if not room.exists():
+            error_message = _('There is no room to reserve')
+            messages.add_message(request, messages.ERROR, error_message)
+            return redirect(reverse_lazy('meeting_list'))
+        else:
+            room = room.last()
+        supplie = Supplie.objects.filter(room=room)
+        self.initial.update({'room': room})
+        form = self.form_class(initial=self.initial)
+        form.fields["supplie"].queryset = supplie
+        context = {'form': form, 'room_object': room}
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        super(ReservationCreateView, self).post(request, *args, **kwargs)
+        import pdb; pdb.set_trace()
+        return redirect(self.success_url)
+
+
+class ReservationDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                            SuperuserRequiredMixin, DeleteView):
+    model = Reservation
+    success_url = reverse_lazy('reservation_list')
+    success_message = _("%(name)s was deleted successfully.")

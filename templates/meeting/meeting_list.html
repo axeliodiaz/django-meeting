@@ -11,24 +11,16 @@
     <div id="wrapper">
         {% include "meeting/top_menu.html" %}
         {% include "meeting/left_menu.html" %}
-
+        <!-- Delete Modal -->
         <div class="modal fade" id="modal_delete_room" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="myModalLabel">{% trans "Delete meeting room" %}</h4>
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                        {% endfor %}
-                        {% for message in messages %}
-                            <li class="{{ message.tags }}">
-                            {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}
-                            </li>
-                        {% endfor %}
                     </div>
                     <div class="modal-body">
-                        {% trans 'Are you sure to delete the meeting room'%} "<span id=name_room></span>"?
+                        {% trans 'Are you sure to delete the meeting room'%} "<span id=name_room_delete></span>"?
                         <input type="hidden" name="room_to_delete">
                     </div>
                     <form class="form-material" method="POST" id="confirm_delete">{% csrf_token %}
@@ -42,6 +34,7 @@
                 </div>
             </div>
         </div>
+        <!-- ./ Delete Modal -->
         <!-- Page Content -->
         <div id="page-wrapper">
             <div class="container-fluid">
@@ -116,7 +109,7 @@
                                             <td class="text-nowrap">
                                                 <a href="{% url 'meeting_edit' room.id %}" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
                                                 <a class="delete_room" href="#" data-id="{{ room.id }}" data-name="{{ room.name }}" data-toggle="tooltip" data-original-title="Close"> <i class="fa fa-close text-danger m-r-10"></i> </a>
-                                                <a href="#" data-toggle="tooltip" data-original-title="Search"> <i class="fa fa-eye text-inverse"></i> </a>
+                                                <a href="{% url 'reservation_add' room.id %}" data-toggle="tooltip" data-original-title="Reserve"> <i class="zmdi zmdi-calendar-check text-inverse m-r-10"></i> </a>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -141,8 +134,8 @@
     <script type="text/javascript">
         $(".delete_room").click(function() {
             $('#room_to_delete').val($(this).attr('data-id'));
-            $('#name_room').text($(this).attr('data-name'));
-            $('#name_room').text($(this).attr('data-name'));
+            $('#name_room_delete').text($(this).attr('data-name'));
+            $('#name_room_delete').text($(this).attr('data-name'));
             url = '/meeting/' + $(this).attr('data-id') + '/delete/';
             $("#confirm_delete").attr("action", url);
             $('#modal_delete_room').modal('show');

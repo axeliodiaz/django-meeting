@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Supplie, Room
+from .models import Supplie, Room, Reservation
 
 
 class RoomAdmin(admin.ModelAdmin):
@@ -10,4 +10,5 @@ class RoomAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Supplie)
+admin.site.register(Reservation)
 admin.site.register(Room, RoomAdmin)

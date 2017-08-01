@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load meeting %}
+{% block content %}
+    <!-- Preloader -->
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div>
+    <div id="wrapper">
+        {% include "meeting/top_menu.html" %}
+        {% include "meeting/left_menu.html" %}
+
+        <div class="modal fade" id="modal_delete_room" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{% trans "Delete supplie" %}</h4>
+                    </div>
+                    <div class="modal-body">
+                        {% trans 'Are you sure to delete the supplie'%} "<span id=name_supplie></span>"?
+                        <input type="hidden" name="supplie_to_delete">
+                    </div>
+                    <form class="form-material" method="POST" id="confirm_delete">{% csrf_token %}
+                        <div class="modal-footer">
+                            <div class="col-xs-12">
+                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">{% trans "Submit" %}</button>
+                                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">{% trans "Cancel" %}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <!-- .page title -->
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title">{% trans "Supplies" %}</h4>
+                    </div>
+                    <!-- /.page title -->
+                    <!-- .breadcrumb -->
+                    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                        <a href="https://themeforest.net/item/elite-admin-responsive-dashboard-web-app-kit-/16750820" target="_blank" class="btn btn-danger pull-right m-l-20 btn-rounded btn-outline hidden-xs hidden-sm waves-effect waves-light">Buy Now</a>
+                        <ol class="breadcrumb">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">{% trans "Supplies" %}</li>
+                        </ol>
+                    </div>
+                    <!-- /.breadcrumb -->
+                </div>
+                <!-- .row -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="white-box">
+                            <a href="{% url 'supplie_add' %}" class="btn btn-success waves-effect waves-light m-r-10 pull-right">{% trans "Add supplie" %}</a>
+                            <h3 class="box-title">{% trans "List of supplies" %}</h3>
+                            <br />
+                            {% if supplies.exists %}
+                            <div class="white-box">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans "Name" %}</th>
+                                            <th>{% trans "Optioins" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for supplie in supplies %}
+                                        <tr>
+                                            <td><a href="javascript:void(0)">{{ supplie.name }}</a></td>
+                                            <td class="text-nowrap">
+                                                <a href="{% url 'supplie_edit' supplie.id %}" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
+                                                <a class="delete_supplie" href="#" data-id="{{ supplie.id }}" data-name="{{ supplie.name }}" data-toggle="tooltip" data-original-title="Close"> <i class="fa fa-close text-danger m-r-10"></i> </a>
+                                                <a href="#" data-toggle="tooltip" data-original-title="Search"> <i class="fa fa-eye text-inverse"></i> </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% else %}
+                        <h1 class="box-title">{% trans "There is no registered supplie" %}</h1>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- /.row -->
+                {% include "meeting/right_menu.html" %}
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        $(".delete_supplie").click(function() {
+            $('#supplie_to_delete').val($(this).attr('data-id'));
+            $('#name_supplie').text($(this).attr('data-name'));
+            $('#name_supplie').text($(this).attr('data-name'));
+            url = '/meeting/supplie/' + $(this).attr('data-id') + '/delete/';
+            $("#confirm_delete").attr("action", url);
+            $('#modal_delete_room').modal('show');
+        });
+    </script>
+{% endblock %}

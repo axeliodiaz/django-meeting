@@ -13,13 +13,18 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="http://eliteadmin.themedesigner.in/demos/images/favicon.png">
     <title>Django Meeting</title>
+    <style>
+    </style>
     <!-- Bootstrap Core CSS -->
     <link href='{% static "bootstrap/dist/css/bootstrap.min.css" %}' rel="stylesheet">
     <link href='{% static "bower_components/bootstrap-extension/css/bootstrap-extension.css" %}' rel="stylesheet">
 
     <!-- Select2 -->
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <!-- ClockPicker -->
+    <link href='{% static "bower_components/clockpicker/dist/jquery-clockpicker.min.css" %}' rel="stylesheet">
+    <!-- DatePicker -->
+    <link href='{% static "bower_components/bootstrap-datepicker/bootstrap-datepicker.min.css" %}' rel="stylesheet">
     <!-- Toasts -->
     <link href='{% static "bower_components/toast-master/css/jquery.toast.css" %}' rel="stylesheet">
     <!-- This is Sidebar menu CSS -->
@@ -79,22 +84,50 @@
     <script type="text/javascript">
         $('select').select2();
     </script>
+    <!-- ClockPicker -->
+    <script src='{% static "bower_components/clockpicker/dist/jquery-clockpicker.min.js" %}'></script>
+    <!-- DatePicker -->
+    <script src='{% static "bower_components/bootstrap-datepicker/bootstrap-datepicker.min.js" %}'></script>
 
     <script type="text/javascript">
-        {% for message in messages %}
-        show_notification('{% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}', '{{ message.tags }}');
-        {% endfor %}
-        function show_notification(message, status) {
-            $.toast({
-                heading: 'A new ' + status + ' message!',
-                text: message,
-                position: 'top-right',
-                loaderBg: '#ff6849',
-                icon: status,
-                hideAfter: 3000,
-                stack: 6
-            });
-        }
+        // Clock pickers
+        $('.clockpicker').clockpicker({
+            donetext: 'Done',
+        })
+        .find('input').change(function() {
+            console.log(this.value);
+        });
+
+        $('#datepicker').datepicker({
+            todayHighlight: true,
+            format: 'yyyy-mm-dd'
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            {% for message in messages %}
+            show_notification('{% if "safe" in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}', '{{ message.tags }}');
+            {% endfor %}
+
+            var message = $('#form_error').attr('data-message');
+            if (message) {
+                show_notification(message, 'error');
+            }
+
+            function show_notification(message, status) {
+                $.toast({
+                    heading: 'A new ' + status + ' message!',
+                    text: message,
+                    position: 'top-right',
+                    loaderBg: '#ff6849',
+                    icon: status,
+                    hideAfter: 3000,
+                    stack: 6
+                });
+            }
+
+        });
     </script>
     {% block extra_js %}{% endblock %}
 </body>
