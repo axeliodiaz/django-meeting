@@ -24,7 +24,7 @@
                     <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
                         <a href="https://themeforest.net/item/elite-admin-responsive-dashboard-web-app-kit-/16750820" target="_blank" class="btn btn-danger pull-right m-l-20 btn-rounded btn-outline hidden-xs hidden-sm waves-effect waves-light">Buy Now</a>
                         <ol class="breadcrumb">
-                            <li><a href="{% url 'meeting_list' %}">{% trans "Meeting room" %}</a></li>
+                            <li><a href="{% url 'meeting_list' %}">{% trans "Meeting rooms" %}</a></li>
                             <li class="active">{% trans "Reservations" %}</li>
                         </ol>
                     </div>
@@ -40,7 +40,7 @@
                                     <div class="form-group">
                                         {% if field.errors %}
                                             {% for error in field.errors %}
-                                            <div id="form_error" data-message="{{ error }}"></div>
+                                            <div id="form_error" data-field="{{ field.label }}" data-message="{{ error }}"></div>
                                             {% endfor %}
                                         {% endif %}
                                         {{ field.label_tag }}
@@ -50,6 +50,7 @@
                                         {% endif %}
                                     </div>
                                 {% endfor %}
+                                <input type="hidden" name="room" value="{{ room_object.id }}">
                                 <div class="form-group text-center m-t-20">
                                     <div class="col-xs-12">
                                         <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">{% trans "Submit" %}</button>

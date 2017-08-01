@@ -111,13 +111,14 @@
             {% endfor %}
 
             var message = $('#form_error').attr('data-message');
+            var field = $('#form_error').attr('data-field');
             if (message) {
-                show_notification(message, 'error');
+                show_notification(message, 'error', 'You have an error in <b>' + field + '</b>');
             }
 
-            function show_notification(message, status) {
+            function show_notification(message, status, title='Atention!') {
                 $.toast({
-                    heading: 'A new ' + status + ' message!',
+                    heading: title,
                     text: message,
                     position: 'top-right',
                     loaderBg: '#ff6849',
@@ -126,6 +127,11 @@
                     stack: 6
                 });
             }
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var message = $('.field-disabled').attr('disabled', 'disabled');
 
         });
     </script>

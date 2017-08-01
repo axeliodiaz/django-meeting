@@ -2,8 +2,10 @@ from __future__ import unicode_literals
 import datetime
 
 from django.db import models
+from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+from django.dispatch import receiver
 
 from model_utils.models import TimeStampedModel, TimeFramedModel
 from model_utils import Choices
@@ -41,7 +43,7 @@ class Room(models.Model):
 
 class Reservation(TimeStampedModel):
     room = models.ForeignKey(Room, blank=True, null=True)
-    capacity = models.PositiveIntegerField(blank=True, null=True)
+    capacity = models.PositiveIntegerField()
     supplie = models.ManyToManyField(Supplie)
     date = models.DateField(default=datetime.datetime.today)
     start = models.TimeField(default=timezone.now)
@@ -49,12 +51,3 @@ class Reservation(TimeStampedModel):
 
     def __unicode__(self):
         return u"{}".format(self.room)
-
-
-def reserve_room(sender, **kwargs):
-    if 'created' in kwargs:
-        if sender.room.status == 'available':
-            sender.room.status = 'reserved'
-            sender.room.save()
-    # Do something
-    pass

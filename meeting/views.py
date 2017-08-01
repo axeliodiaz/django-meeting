@@ -162,36 +162,23 @@ class ReservationEditView(SuccessMessageMixin, LoginRequiredMixin,
         return obj
 
 
-class ReservationCreateView2(LoginRequiredMixin, CreateView):
+class ReservationCreateView(LoginRequiredMixin, View):
     template_name = 'meeting/reservation_edit.html'
     form_class = ReservationForm
     success_url = reverse_lazy('meeting_list')
-    success_message = _("%(name)s was created successfully.")
+    success_message = _("Reservation was saved successfully.")
+
+    def get_initial(self):
+        initial_data = super(ReservationCreateView, self).get_initial()
+        return initial_data
 
     def get(self, request, *args, **kwargs):
         room = Room.objects.filter(id=self.kwargs['pk'])
-        if not room.exists():
-            error_message = _('There is no room to reserve')
-            messages.add_message(request, messages.ERROR, error_message)
-            return redirect(reverse_lazy('meeting_list'))
-        else:
-            room = room.first()
-        supplie = Supplie.objects.filter(room=room)
-        self.initial.update({'room': room})
-        form = self.form_class(initial=self.initial)
-        form.fields["supplie"].queryset = supplie
-        context = {'form': form, 'room': room}
-        return render(request, self.template_name, context)
+        if Reservation.objects.filter(room=room).exists():
+            error_message = _('That room already has a reservation')
+            messages.add_message(request, messages.WARNING, error_message)
+            return redirect(self.success_url)
 
-
-class ReservationCreateView(LoginRequiredMixin, CreateView):
-    template_name = 'meeting/reservation_edit.html'
-    form_class = ReservationForm
-    success_url = reverse_lazy('meeting_list')
-    success_message = _("%(name)s was created successfully.")
-
-    def get(self, request, *args, **kwargs):
-        room = Room.objects.filter(id=self.kwargs['pk'])
         if not room.exists():
             error_message = _('There is no room to reserve')
             messages.add_message(request, messages.ERROR, error_message)
@@ -199,15 +186,35 @@ class ReservationCreateView(LoginRequiredMixin, CreateView):
         else:
             room = room.last()
         supplie = Supplie.objects.filter(room=room)
-        self.initial.update({'room': room})
-        form = self.form_class(initial=self.initial)
+        initial_data = {'room': room}
+        form = self.form_class(initial=initial_data)
         form.fields["supplie"].queryset = supplie
         context = {'form': form, 'room_object': room}
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        super(ReservationCreateView, self).post(request, *args, **kwargs)
-        import pdb; pdb.set_trace()
+        room = Room.objects.get(id=request.POST.get('room'))
+        supplies = request.POST.getlist('supplie')
+        data = {
+            'start': request.POST.get('start'),
+            'end': request.POST.get('end'),
+            'date': request.POST.get('date'),
+            'capacity': request.POST.get('capacity')
+        }
+
+        supplies = Supplie.objects.filter(id__in=supplies)
+        reservation = Reservation.objects.filter(room=room)
+        # import pdb; pdb.set_trace()
+        if reservation.exists():
+            reservation.update(**data)
+            reservation = reservation.last()
+        else:
+            data.update({'room': room})
+            reservation = Reservation.objects.create(**data)
+        reservation.supplie.add(*list(supplies))
+        room.status = 'reserved'
+        room.save()
+        messages.add_message(request, messages.SUCCESS, self.success_message)
         return redirect(self.success_url)
 
 

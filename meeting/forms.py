@@ -37,13 +37,10 @@ class SearchRoomForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SearchRoomForm, self).__init__(*args, **kwargs)
-        initial = kwargs.get('initial', {})
         self.fields['capacity'].widget.attrs['class'] = 'form-control col-md-6'
         self.fields['supplie'].widget.attrs['class'] = 'form-control col-md-6'
         self.fields['capacity'].required = False
         self.fields['supplie'].required = False
-        initial['capacity'] = 0
-        kwargs['initial'] = initial
 
 
 class ReservationForm(ModelForm):
@@ -62,7 +59,14 @@ class ReservationForm(ModelForm):
         self.fields['date'].widget.attrs['id'] = 'datepicker'
         self.fields['start'].widget.attrs['class'] = 'form-control clockpicker'
         self.fields['end'].widget.attrs['class'] = 'form-control clockpicker'
-        self.fields['room'].disabled = True
+        self.fields['room'].widget.attrs['class'] = 'field-disabled'
+
+        if 'data' in kwargs:
+            data = kwargs['data'].copy()
+            import pdb; pdb.set_trace()
+            self.prefix = kwargs.get('prefix')
+            data[self.add_prefix('room')] = self.initial.get('room')
+            kwargs['data'] = data
 
     def clean(self):
         cleaned_data = super(ReservationForm, self).clean()
