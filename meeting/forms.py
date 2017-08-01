@@ -44,11 +44,9 @@ class SearchRoomForm(ModelForm):
 
 
 class ReservationForm(ModelForm):
-    READONLY_FIELDS = ['room']
-
     class Meta:
         model = Reservation
-        fields = '__all__'
+        exclude = ['user']
 
     def __init__(self, *args, **kwargs):
         super(ReservationForm, self).__init__(*args, **kwargs)
@@ -61,17 +59,10 @@ class ReservationForm(ModelForm):
         self.fields['end'].widget.attrs['class'] = 'form-control clockpicker'
         self.fields['room'].widget.attrs['class'] = 'field-disabled'
 
-        if 'data' in kwargs:
-            data = kwargs['data'].copy()
-            import pdb; pdb.set_trace()
-            self.prefix = kwargs.get('prefix')
-            data[self.add_prefix('room')] = self.initial.get('room')
-            kwargs['data'] = data
-
     def clean(self):
         cleaned_data = super(ReservationForm, self).clean()
         capacity = self.cleaned_data.get('capacity', 0)
         message_error = _('Capacity must be greater than 0')
-        if capacity <= 0:
+        if int(capacity) <= 0:
             self.add_error('capacity', message_error)
         return cleaned_data

@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.dispatch import receiver
+from django.contrib.auth.models import User
 
 from model_utils.models import TimeStampedModel, TimeFramedModel
 from model_utils import Choices
@@ -48,6 +49,7 @@ class Reservation(TimeStampedModel):
     date = models.DateField(default=datetime.datetime.today)
     start = models.TimeField(default=timezone.now)
     end = models.TimeField(default=timezone.now)
+    user = models.ForeignKey(User, blank=True, null=True)
 
     def __unicode__(self):
         return u"{}".format(self.room)

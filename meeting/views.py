@@ -166,7 +166,7 @@ class ReservationCreateView(LoginRequiredMixin, View):
     template_name = 'meeting/reservation_edit.html'
     form_class = ReservationForm
     success_url = reverse_lazy('meeting_list')
-    success_message = _("Reservation was saved successfully.")
+    success_message = _("{} was reserved successfully.")
 
     def get_initial(self):
         initial_data = super(ReservationCreateView, self).get_initial()
@@ -174,7 +174,9 @@ class ReservationCreateView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         room = Room.objects.filter(id=self.kwargs['pk'])
-        if Reservation.objects.filter(room=room).exists():
+        status_not_reserve = ['reserved']
+        if Reservation.objects.filter(
+                room__status__in=status_not_reserve).exists():
             error_message = _('That room already has a reservation')
             messages.add_message(request, messages.WARNING, error_message)
             return redirect(self.success_url)
@@ -194,12 +196,28 @@ class ReservationCreateView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         room = Room.objects.get(id=request.POST.get('room'))
+        capacity = request.POST.get('capacity')
+        error = False
+        if int(capacity) > room.capacity:
+            message = _('Capacity must be between 0 and {} people')
+            message = message.format(room.capacity)
+            messages.add_message(request, messages.ERROR, message)
+            error = True
+        if int(capacity) <= 0:
+            error = True
+
+        if error:
+            initial_data = {'room': room}
+            form = self.form_class(request.POST)
+            context = {'form': form, 'room_object': room}
+            return render(request, self.template_name, context)
+
         supplies = request.POST.getlist('supplie')
         data = {
             'start': request.POST.get('start'),
             'end': request.POST.get('end'),
             'date': request.POST.get('date'),
-            'capacity': request.POST.get('capacity')
+            'capacity': capacity
         }
 
         supplies = Supplie.objects.filter(id__in=supplies)
@@ -214,6 +232,8 @@ class ReservationCreateView(LoginRequiredMixin, View):
         reservation.supplie.add(*list(supplies))
         room.status = 'reserved'
         room.save()
+        self.success_message = self.success_message.format(
+            reservation.room.name)
         messages.add_message(request, messages.SUCCESS, self.success_message)
         return redirect(self.success_url)
 

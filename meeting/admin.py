@@ -9,6 +9,13 @@ class RoomAdmin(admin.ModelAdmin):
     list_display = ['name', 'capacity']
 
 
+class ReservationAdmin(admin.ModelAdmin):
+    """docstring for SupplieAdmin."""
+    list_filter = ['room__status', 'supplie']
+    list_display = ['room', 'date', 'start', 'end']
+    search_fields = ['room__name']
+
+
 admin.site.register(Supplie)
-admin.site.register(Reservation)
+admin.site.register(Reservation, ReservationAdmin)
 admin.site.register(Room, RoomAdmin)
