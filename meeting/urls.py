@@ -1,10 +1,10 @@
 from django.conf.urls import url
 from django.contrib import admin
-from .views import (RoomListView, RoomEditView, RoomCreateView, RoomDeleteView,
-                    SupplieListView, SupplieEditView, SupplieCreateView,
-                    SupplieDeleteView, ReservationEditView,
+from .views import (RoomListView, RoomEditView, RoomCreateView,
+                    RoomDeleteView, SupplieListView, SupplieEditView,
+                    SupplieCreateView, SupplieDeleteView, ReservationEditView,
                     ReservationDeleteView, ReservationCreateView,
-                    ReservationListView)
+                    ReservationListView, ReservationConfirmView)
 
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^reservation/(?P<pk>\d+)/change/', ReservationEditView.as_view(), name='reservation_edit'),
     url(r'^reservation/(?P<pk>\d+)/delete/', ReservationDeleteView.as_view(), name='reservation_delete'),
     url(r'^reservation/(?P<pk>\d+)/add/', ReservationCreateView.as_view(), name='reservation_add'),
+    url(r'^reservation/(?P<pk>\d+)/confirm/', ReservationConfirmView.as_view(), name='reservation_confirm'),
     url(r'^reservation/list/', ReservationListView.as_view(), name='reservation_list'),
     url(r'^(?P<pk>\d+)/change/', RoomEditView.as_view(), name='meeting_edit'),
     url(r'^(?P<pk>\d+)/delete/', RoomDeleteView.as_view(), name='meeting_delete'),

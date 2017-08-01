@@ -217,12 +217,12 @@ class ReservationCreateView(LoginRequiredMixin, View):
             'start': request.POST.get('start'),
             'end': request.POST.get('end'),
             'date': request.POST.get('date'),
-            'capacity': capacity
+            'capacity': capacity,
+            'user': request.user,
         }
 
         supplies = Supplie.objects.filter(id__in=supplies)
         reservation = Reservation.objects.filter(room=room)
-        # import pdb; pdb.set_trace()
         if reservation.exists():
             reservation.update(**data)
             reservation = reservation.last()
@@ -234,6 +234,38 @@ class ReservationCreateView(LoginRequiredMixin, View):
         room.save()
         self.success_message = self.success_message.format(
             reservation.room.name)
+        messages.add_message(request, messages.SUCCESS, self.success_message)
+        return redirect(self.success_url)
+
+
+class ReservationConfirmView(LoginRequiredMixin, View):
+    template_name = 'meeting/reservation_edit.html'
+    form_class = ReservationForm
+    success_url = reverse_lazy('meeting_list')
+    success_message = _("{} was confirmed successfully.")
+
+    def get_initial(self):
+        initial_data = super(ReservationCreateView, self).get_initial()
+        return initial_data
+
+    def post(self, request, *args, **kwargs):
+        reservation = Reservation.objects.filter(id=self.kwargs['pk'],
+                                                 user=request.user)
+        room = reservation.last().room
+
+        if not reservation.exists():
+            message = _('You do not have that room reserved')
+            messages.add_message(request, messages.WARNING, message)
+            return redirect(self.success_url)
+
+        if not room.status == 'reserved':
+            error_message = _('That room is not reserved')
+            messages.add_message(request, messages.WARNING, error_message)
+            return redirect(self.success_url)
+
+        room.status = 'confirmed'
+        room.save()
+        self.success_message = self.success_message.format(room.name)
         messages.add_message(request, messages.SUCCESS, self.success_message)
         return redirect(self.success_url)
 
