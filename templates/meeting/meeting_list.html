@@ -137,11 +137,11 @@
                                             </td>
                                             <td class="text-nowrap">
                                                 {% if room.status == 'reserved' %}
-                                                <a class="confirm_room" href="#" data-name="{{ room.name }}" data-id="{{ room.reservation_set.get_queryset.last.id }}" data-date="{{ room.reservation_set.get_queryset.last.date }}" data-start="{{ room.reservation_set.get_queryset.last.start }}" data-end="{{ room.reservation_set.get_queryset.last.end }}" data-toggle="tooltip" data-original-title="Confirm"> <i class="fa fa-check-circle text-success m-r-10"></i> </a>
+                                                <a class="confirm_room" href="#" data-name="{{ room.name }}" data-id="{{ room.reservation_set.get_queryset.last.id }}" data-date="{{ room.reservation_set.get_queryset.last.date }}" data-start="{{ room.reservation_set.get_queryset.last.start }}" data-end="{{ room.reservation_set.get_queryset.last.end }}" data-toggle="tooltip" data-original-title="Confirm"> <i class="fa fa-check-circle text-warning m-r-10"></i> </a>
                                                 {% elif room.status == 'confirmed' %}
                                                 <a class="confirm_room" href="#" data-toggle="tooltip" data-original-title="Confirmed"> <i class="fa fa-lock text-info m-r-10"></i> </a>
                                                 {% elif room.status == 'available' %}
-                                                <a href="{% url 'reservation_add' room.id %}" data-toggle="tooltip" data-original-title="Reserve"> <i class="zmdi zmdi-calendar-check text-inverse m-r-10"></i> </a>
+                                                <a href="{% url 'reservation_add' room.id %}" data-toggle="tooltip" data-original-title="Reserve"> <i class="zmdi zmdi-calendar-check text-success m-r-10"></i> </a>
                                                 {% else %}
                                                 <a href="#" data-toggle="tooltip" data-original-title="Not available"> <i class="fa fa-lock text-danger m-r-10"></i> </a>
                                                 {% endif %}
@@ -189,6 +189,5 @@
             $("#confirm_reservation").attr("action", url);
             $('#modal_confirm_room').modal('show');
         });
-    </script>
     </script>
 {% endblock %}
