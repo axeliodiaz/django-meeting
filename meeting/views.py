@@ -1,3 +1,7 @@
+import json
+
+from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render
 from django.views.generic import ListView, View
 from django.views.generic.edit import (UpdateView, CreateView, DeleteView,
@@ -12,7 +16,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from .models import Room, Supplie, Reservation
 from .forms import RoomForm, SupplieForm, SearchRoomForm, ReservationForm
 
-from braces.views import (LoginRequiredMixin, SuperuserRequiredMixin)
+from braces.views import (LoginRequiredMixin, SuperuserRequiredMixin,
+                          JSONResponseMixin)
+from json_views.views import JSONDataView
 
 
 class FormListView(FormMixin, ListView):
@@ -275,3 +281,62 @@ class ReservationDeleteView(SuccessMessageMixin, LoginRequiredMixin,
     model = Reservation
     success_url = reverse_lazy('reservation_list')
     success_message = _("%(name)s was deleted successfully.")
+
+
+class ReservationCalendarView(LoginRequiredMixin, View):
+    model = Reservation
+    template_name = "meeting/calendar.html"
+    form_class = ReservationForm
+    success_message = "Reservation saved successfully"
+    success_url = reverse_lazy('reservation_calendar')
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = {'form': self.form_class}
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            message = _('You do not have permissions to edit this reservation')
+            messages.add_message(request, messages.ERROR, message)
+            return redirect(self.success_url)
+
+        id_reservation = request.POST['id_reservation']
+        reservation = Reservation.objects.filter(id=id_reservation)
+
+        action = request.POST.get('action', 'save')
+        if action == 'save':
+            supplies = request.POST.getlist('supplie')
+            supplies = Supplie.objects.filter(id__in=supplies)
+
+            data = {
+                'start': request.POST.get('start'),
+                'end': request.POST.get('end'),
+                'date': request.POST.get('date'),
+                'capacity': request.POST.get('capacity'),
+            }
+            reservation.update(**data)
+            reservation = reservation.last()
+            reservation.supplie.clear()
+            reservation.supplie.add(*list(supplies))
+
+        elif action == 'delete':
+            reservation.delete()
+            self.success_message = 'Reservation deleted successfully'
+
+        messages.add_message(request, messages.SUCCESS, self.success_message)
+        return redirect(self.success_url)
+
+
+class ReservationAPIListView(LoginRequiredMixin, JSONDataView):
+    model = Reservation
+    context_object_name = "reservations"
+    json_dumps_kwargs = {u"indent": 2}
+
+    def get_context_data(self, **kwargs):
+        context = super(ReservationAPIListView, self).get_context_data(**kwargs)
+        context[self.context_object_name] = self.model.objects.filter()
+        context['user'] = self.request.user
+        return context
