@@ -1,0 +1,15 @@
+<div class="row bg-title">
+    <!-- .page title -->
+    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+        <h4 class="page-title">{{ title_page }}</h4>
+    </div>
+    <!-- /.page title -->
+    <!-- .breadcrumb -->
+    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'meeting_list' %}">Dashboard</a></li>
+            <li class="active">{{ title_page }}</li>
+        </ol>
+    </div>
+    <!-- /.breadcrumb -->
+</div>

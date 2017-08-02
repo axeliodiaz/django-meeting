@@ -53,3 +53,14 @@ class Reservation(TimeStampedModel):
 
     def __unicode__(self):
         return u"{}".format(self.room)
+
+
+class ReservationRequest(models.Model):
+    """(ReservationRequest description)"""
+    reservation = models.ForeignKey(Reservation, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True)
+    start = models.TimeField(default=timezone.now)
+    end = models.TimeField(default=timezone.now)
+
+    def __unicode__(self):
+        return u"ReservationRequest"

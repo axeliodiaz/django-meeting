@@ -17,7 +17,7 @@
             <li class="nav-small-cap m-t-10">--- Main Menu</li>
             <li><a href="javascript:void(0)" class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">Link type </span></a> </li>
             <li>
-                <a class="waves-effect active"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Room meeting" %}<span class="fa arrow"></span></span></a>
+                <a class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Room meeting" %}<span class="fa arrow"></span></span></a>
                 <ul class="nav nav-second-level" aria-expanded="false">
                     <li><a href="{% url 'meeting_list' %}">{% trans "Meeting room list" %}</a></li>
                     {% if request.user.is_staff %}<li><a href="{% url 'meeting_add' %}">{% trans "New meeting room" %}</a></li>{% endif %}
@@ -25,7 +25,7 @@
             </li>
             {% if request.user.is_staff %}
             <li>
-                <a class="waves-effect active"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Supplies" %}<span class="fa arrow"></span></span></a>
+                <a class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Supplies" %}<span class="fa arrow"></span></span></a>
                 <ul class="nav nav-second-level" aria-expanded="false">
                     <li><a href="{% url 'supplie_list' %}">{% trans "Supplie list" %}</a></li>
                     <li><a href="{% url 'supplie_add' %}">{% trans "New Supplie" %}</a></li>
@@ -33,10 +33,10 @@
             </li>
             {% endif %}
             <li>
-                <a class="waves-effect active"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Reservations" %}<span class="fa arrow"></span></span></a>
+                <a class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Reservations" %}<span class="fa arrow"></span></span></a>
                 <ul class="nav nav-second-level" aria-expanded="false">
-                    <li><a href="{% url 'meeting_list' %}">{% trans "Meeting room list" %}</a></li>
                     <li><a href="{% url 'reservation_calendar' %}">{% trans "Calendar" %}</a></li>
+                    <li><a href="{% url 'reservation_request_list' %}">{% trans "Reservation requests" %}</a></li>
                 </ul>
             </li>
         </ul>
