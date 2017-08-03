@@ -1,0 +1,18 @@
+[
+{
+  "model": "meeting.supplie",
+  "pk": 1,
+  "fields": {
+    "name": "Proyector",
+    "description": "Aparato \u00f3ptico que recibe una se\u00f1al de v\u00eddeo y proyecta la imagen correspondiente en una pantalla de proyecci\u00f3n usando un sistema de lentes, permitiendo as\u00ed mostrar im\u00e1genes fijas o en movimiento."
+  }
+},
+{
+  "model": "meeting.supplie",
+  "pk": 2,
+  "fields": {
+    "name": "Pizarr\u00f3n",
+    "description": "Superficie de escritura reutilizable en la cual el texto o figuras se realizan con tiza u otro tipo de rotuladores borrables."
+  }
+}
+]

@@ -19,3 +19,10 @@ Create the PostgreSQL Database User, with the following command (Password m33t1n
 Create the PostgreSQL Database called 'bizwi', with the following command: ::
 
 	sudo -u postgres createdb -Ttemplate0 -O meeting -EUTF-8 meeting
+
+Load data fixtures
+------------------
+
+Load all initial data: ::
+
+    ./manage.py loaddata meeting/fixtures/*

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 
 from django.core import serializers
@@ -136,8 +137,18 @@ class RoomCreateView(SuccessMessageMixin, LoginRequiredMixin,
 
     def get_context_data(self, **kwargs):
         context = super(RoomCreateView, self).get_context_data()
+        default_options = {'name__in': ['Pizarrón', 'Proyector']}
+        context['form'] = self.form_class(
+            initial={'supplie': Supplie.objects.filter(**default_options)})
         context.update({'title_page': self.template_title})
         return context
+
+    def get_initial_data(self, default_options=None):
+        initial_data = {}
+        if default_options:
+            supplies = Supplie.objects.filter(**default_options)
+            initial_data.update({'supplie': supplies})
+        return initial_data
 
 
 class RoomDeleteView(SuccessMessageMixin, LoginRequiredMixin,
