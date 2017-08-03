@@ -23,7 +23,7 @@ Create the PostgreSQL Database called 'bizwi', with the following command: ::
 Meeting configuration
 ---------------------
 
-All extra and confidential configuration (like database params) is in etc/meeting.ini file.
+All extra and confidential configuration (like database params) is in ``etc/meeting.ini`` file.
 
 Migrate models
 --------------
