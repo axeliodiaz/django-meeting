@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load meeting %}
+{% block content %}
+    <!-- Preloader -->
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div>
+    <div id="wrapper">
+        {% include "meeting/top_menu.html" %}
+        {% include "meeting/left_menu.html" %}
+
+        <div class="modal fade" id="modal_delete_room" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{% trans "Delete supplie" %}</h4>
+                    </div>
+                    <div class="modal-body">
+                        {% trans 'Are you sure to delete the supplie'%} "<span id=name_supplie></span>"?
+                        <input type="hidden" name="supplie_to_delete">
+                    </div>
+                    <form class="form-material" method="POST" id="confirm_delete">{% csrf_token %}
+                        <div class="modal-footer">
+                            <div class="col-xs-12">
+                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">{% trans "Submit" %}</button>
+                                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">{% trans "Cancel" %}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                {% include "meeting/breadcrumb.html" %}
+                <!-- .row -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="white-box">
+                            <h3 class="box-title">{% trans "List of reservation requests" %}</h3>
+                            <br />
+                            {% if reservation_requests.exists %}
+                            <div class="white-box">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans "Room" %}</th>
+                                            <th>{% trans "Room owner" %}</th>
+                                            <th>{% trans "Request owner" %}</th>
+                                            <th>{% trans "Options" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for req in reservation_requests %}
+                                        <tr>
+                                            <td><a href="#">{{ req.reservation.room.name }}</a></td>
+                                            <td>{{ req.reservation.user }}</a></td>
+                                            <td>{{ req.user }}</a></td>
+                                            <td class="text-nowrap">
+                                                <a id="approve_request" href="#" data-id="{{ req.id }}" data-toggle="tooltip" data-original-title="Approve"> <i class="fa fa-check text-success m-r-10"></i> </a>
+                                                <a id="reject_request" href="#" data-id="{{ req.id }}" data-toggle="tooltip" data-original-title="Reject"> <i class="fa fa-close text-danger m-r-10"></i> </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% else %}
+                        <h1 class="box-title">{% trans "There is no registered supplie" %}</h1>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- /.row -->
+                {% include "meeting/right_menu.html" %}
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        var url = '{% url "reservation_request_list" %}'
+        var token = $('input[name="csrfmiddlewaretoken"]').prop('value');
+        $("#approve_request").click(function() {
+            data = {'approve': true,
+                    'reservation_id': $("#approve_request").attr("data-id"),
+                    'csrfmiddlewaretoken': token}
+            $.ajax({
+                url: url,
+                method: 'post',
+                dataType: 'json',
+                data: data,
+            }).done(function (result) {
+                var message = result.message;
+                $.toast({
+                    heading: 'Hey!',
+                    text: message,
+                    position: 'top-right',
+                    loaderBg: '#ff6849',
+                    icon: 'success',
+                    hideAfter: 5000,
+                    stack: 6
+                });
+            });
+        });
+        $("#reject_request").click(function() {
+            data = {'reject': true,
+                    'reservation_id': $("#reject_request").attr("data-id"),
+                    'csrfmiddlewaretoken': token}
+            $.ajax({
+                url: url,
+                method: 'post',
+                dataType: 'json',
+                data: data,
+            }).done(function (result) {
+                var message = result.message;
+                $.toast({
+                    heading: 'Hey!',
+                    text: message,
+                    position: 'top-right',
+                    loaderBg: '#ff6849',
+                    icon: 'success',
+                    hideAfter: 5000,
+                    stack: 6
+                });
+            });
+        });
+    </script>
+{% endblock %}
