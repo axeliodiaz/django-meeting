@@ -20,9 +20,25 @@ Create the PostgreSQL Database called 'bizwi', with the following command: ::
 
 	sudo -u postgres createdb -Ttemplate0 -O meeting -EUTF-8 meeting
 
+Migrate models
+--------------
+
+Migrate all django models and meeting models: ::
+
+    ./manage.py migrate
+
 Load data fixtures
 ------------------
 
 Load all initial data: ::
 
     ./manage.py loaddata meeting/fixtures/*
+
+Crete a superuser
+-----------------
+
+Create a superuser: ::
+
+    ./manage.py createsuperuser
+
+NOTE: The system administrators will be superusers (is_superuser = True). The employees are those users who belong to the staff (is_staff = True)
