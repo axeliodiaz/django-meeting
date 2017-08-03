@@ -101,5 +101,5 @@ ENV/
 .mypy_cache/
 
 # media & statics
-# static/
+static/
 media/
