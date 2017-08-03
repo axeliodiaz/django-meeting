@@ -36,7 +36,7 @@
         </div>
         <!-- ./ Delete Modal -->
         <!-- Confirm Modal -->
-        <div class="modal fade" id="modal_confirm_room" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="modal_request_room" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -47,7 +47,7 @@
                         <span>{% trans "Once confirmed, the request must be approved by an administrator to give him the meeting room to you." %}</span>
                         <input type="hidden" name="room_to_confirm">
                     </div>
-                    <form class="form-material" method="POST" id="confirm_reservation">{% csrf_token %}
+                    <form class="form-material" method="POST" id="confirm_request">{% csrf_token %}
                         <div class="modal-footer">
                             <div class="col-xs-12">
                                 <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">{% trans "Confirm" %}</button>
@@ -68,13 +68,13 @@
                         <h4 class="modal-title" id="myModalLabel">{% trans "Confirm request meeting room" %}</h4>
                     </div>
                     <div class="modal-body">
-                        <span id=message_to_confirm></span>
+                        <span id=message_to_confirm_room></span>
                         <input type="hidden" name="room_to_confirm">
                     </div>
                     <form class="form-material" method="POST" id="confirm_reservation">{% csrf_token %}
                         <div class="modal-footer">
                             <div class="col-xs-12">
-                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">{% trans "Submit" %}</button>
+                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">{% trans "Confirm" %}</button>
                                 <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">{% trans "Cancel" %}</button>
                             </div>
                         </div>
@@ -155,16 +155,15 @@
                                             </td>
                                             <td class="text-nowrap">
                                                 {% if room.status == 'reserved' %}
-                                                <a class="confirm_room" href="#" data-name="{{ room.name }}" data-id="{{ room.reservation_set.get_queryset.last.id }}" data-date="{{ room.reservation_set.get_queryset.last.date }}" data-start="{{ room.reservation_set.get_queryset.last.start }}" data-end="{{ room.reservation_set.get_queryset.last.end }}" data-toggle="tooltip" data-original-title='{% trans "Confirm" %}'> <i class="fa fa-check-circle text-warning m-r-10"></i> </a>
-                                                {% elif room.status == 'confirmed' %}
-                                                <a class="confirm_room" href="#" data-toggle="tooltip" data-original-title="Confirmed"> <i class="fa fa-lock text-info m-r-10"></i> </a>
+                                                    {% if room.reservation_set.get_queryset.last.user == request.user %}
+                                                        <a class="confirm_room" href="#" data-name="{{ room.name }}" data-id="{{ room.reservation_set.get_queryset.last.id }}" data-date="{{ room.reservation_set.get_queryset.last.date }}" data-start="{{ room.reservation_set.get_queryset.last.start }}" data-end="{{ room.reservation_set.get_queryset.last.end }}" data-toggle="tooltip" data-original-title='{% trans "Confirm" %}'> <i class="fa fa-check-circle text-warning m-r-10"></i> </a>
+                                                    {% else %}
+                                                        <a class="request_room" href="#" data-name="{{ room.name }}" data-id="{{ room.reservation_set.get_queryset.last.id }}" data-date="{{ room.reservation_set.get_queryset.last.date }}" data-start="{{ room.reservation_set.get_queryset.last.start }}" data-end="{{ room.reservation_set.get_queryset.last.end }}" data-toggle="tooltip" data-original-title='{% trans "Request meeting room" %}'> <i class="fa fa-exchange text-inverse m-r-10"></i> </a>
+                                                    {% endif %}
                                                 {% elif room.status == 'available' %}
                                                 <a href="{% url 'reservation_add' room.id %}" data-toggle="tooltip" data-original-title="Reserve"> <i class="zmdi zmdi-calendar-check text-success m-r-10"></i> </a>
                                                 {% else %}
                                                 <a href="#" data-toggle="tooltip" data-original-title="Not available"> <i class="fa fa-lock text-danger m-r-10"></i> </a>
-                                                {% endif %}
-                                                {% if room.status == 'reserved' %}
-                                                <a class="request_room" href="#" data-name="{{ room.name }}" data-id="{{ room.reservation_set.get_queryset.last.id }}" data-date="{{ room.reservation_set.get_queryset.last.date }}" data-start="{{ room.reservation_set.get_queryset.last.start }}" data-end="{{ room.reservation_set.get_queryset.last.end }}" data-toggle="tooltip" data-original-title='{% trans "Request meeting room" %}'> <i class="fa fa-exchange text-inverse m-r-10"></i> </a>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -203,10 +202,11 @@
             var date = $(this).attr('data-date');
             var start = $(this).attr('data-start');
             var end = $(this).attr('data-end');
+            var message = 'You are sure to confirm room "' + room_name +'" from ' + start + ' to ' + end + ' on date ' + date + '';
             $('#room_to_confirm').val(reservation_id);
             $('#name_room_confirm').text(room_name);
-            $('#message_to_confirm').text('You are sure to confirm room "' + room_name +'" from ' + start + ' to ' + end + ' on date ' + date + '');
-            url = '/meeting/reservation/' + $(this).attr('data-id') + '/confirm/';
+            $('#message_to_confirm_room').text(message);
+            url = '/reservation/' + $(this).attr('data-id') + '/confirm/';
             $("#confirm_reservation").attr("action", url);
             $('#modal_confirm_room').modal('show');
         });
@@ -227,12 +227,13 @@
             var date = $(this).attr('data-date');
             var start = $(this).attr('data-start');
             var end = $(this).attr('data-end');
+            var message = 'Are you sure to request meeting room "' + room_name +'""?';
             $('#room_to_confirm').val(reservation_id);
             $('#name_room_confirm').text(room_name);
-            $('#message_to_confirm').text('Are you sure to request meeting room "' + room_name +'""?');
+            $('#message_to_confirm').text(message);
             url = '/reservation/request/' + $(this).attr('data-id') + '/add/';
-            $("#confirm_reservation").attr("action", url);
-            $('#modal_confirm_room').modal('show');
+            $("#confirm_request").attr("action", url);
+            $('#modal_request_room').modal('show');
         });
     </script>
 {% endblock %}

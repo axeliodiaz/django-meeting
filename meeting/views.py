@@ -88,8 +88,8 @@ class FormListView(FormMixin, ListView):
             if req.is_approved:
                 message = _("Your request for the {} meeting room has been approved")
             message = message.format(req.reservation.room.name)
-            req.delete()
             messages.add_message(request, messages.SUCCESS, message)
+            req.delete()
         return
 
 
@@ -446,8 +446,10 @@ class ReservationRequestListView(LoginRequiredMixin, ListView):
             message = "{} request has been rejected successfully"
         reservation_request.is_evaluated = True
         reservation_request.save()
-        message = {'message': message.format(reservation_request.user)}
-        return HttpResponse(json.dumps(message), content_type="application/json")
+        message = message.format(reservation_request.user)
+        success_url = {'success_url': str(self.success_url)}
+        messages.add_message(request, messages.SUCCESS, message)
+        return HttpResponse(json.dumps(success_url), content_type="application/json")
 
 
 class ReservationRequestCreateView(SuccessMessageMixin, LoginRequiredMixin,
@@ -456,9 +458,9 @@ class ReservationRequestCreateView(SuccessMessageMixin, LoginRequiredMixin,
     success_url = reverse_lazy('meeting_list')
     success_message = _("The administrator has been notified of your request")
 
-    def get_reservation(self, queryset={}):
-        if queryset:
-            queryset.update({'id': self.kwargs['pk']})
+    def get_reservation(self, request, queryset={}):
+        queryset.update({'id': self.kwargs['pk'],
+                         'user': request.user})
         obj = Reservation.objects.get(**queryset)
         return obj
 
@@ -467,7 +469,7 @@ class ReservationRequestCreateView(SuccessMessageMixin, LoginRequiredMixin,
 
     def post(self, request, *args, **kwargs):
         queryset = self.model.objects.get_or_create(
-            reservation=self.get_reservation(),
+            reservation=self.get_reservation(request),
             user=self.request.user
         )[0]
         print queryset

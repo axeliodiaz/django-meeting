@@ -100,16 +100,8 @@
                 dataType: 'json',
                 data: data,
             }).done(function (result) {
-                var message = result.message;
-                $.toast({
-                    heading: 'Hey!',
-                    text: message,
-                    position: 'top-right',
-                    loaderBg: '#ff6849',
-                    icon: 'success',
-                    hideAfter: 5000,
-                    stack: 6
-                });
+                var success_url = result.success_url;
+                document.location.href = success_url;
             });
         });
         $("#reject_request").click(function() {
@@ -122,16 +114,8 @@
                 dataType: 'json',
                 data: data,
             }).done(function (result) {
-                var message = result.message;
-                $.toast({
-                    heading: 'Hey!',
-                    text: message,
-                    position: 'top-right',
-                    loaderBg: '#ff6849',
-                    icon: 'success',
-                    hideAfter: 5000,
-                    stack: 6
-                });
+                var success_url = result.success_url;
+                document.location.href = success_url;
             });
         });
     </script>
