@@ -126,7 +126,7 @@
         var defaultEvents =  [];
 
         $.ajax({
-            url : "/meeting/api/reservation/",
+            url : "/api/reservation/",
             dataType : 'json',
             async: false,
         }).done(function (obj) {
@@ -167,11 +167,11 @@
             },
             events: defaultEvents,
             editable: true,
-            droppable: true, // this allows things to be dropped onto the calendar !!!
+            droppable: false, // this allows things to be dropped onto the calendar !!!
             eventLimit: true, // allow "more" link when too many events
             selectable: true,
-            drop: function(date) { $this.onDrop($(this), date); },
-            select: function (start, end, allDay) { $this.onSelect(start, end, allDay); },
+            // drop: function(date) { $this.onDrop($(this), date); },
+            // select: function (start, end, allDay) { $this.onSelect(start, end, allDay); },
             eventClick: function(calEvent, jsEvent, view) { $this.onEventClick(calEvent, jsEvent, view); }
 
         });
