@@ -23,7 +23,7 @@ from meeting.views import (SupplieEditView, SupplieDeleteView,
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^meeting/', include('meeting.urls')),
+    url(r'^', include('meeting.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

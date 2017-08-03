@@ -3,6 +3,7 @@ import json
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.views.generic import ListView, View
 from django.views.generic.edit import (UpdateView, CreateView, DeleteView,
                                        FormMixin)
@@ -35,6 +36,8 @@ class FormListView(FormMixin, ListView):
             raise Http404(_(u"Empty list and '%(class_name)s.allow_empty' is False.")
                           % {'class_name': self.__class__.__name__})
         context = self.get_context_data(object_list=self.object_list, form=self.form)
+
+        self.get_reservation_requests(request)
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
@@ -55,20 +58,7 @@ class FormListView(FormMixin, ListView):
             orders.append('supplie')
         if data['capacity__gte'] == '':
             data['capacity__gte'] = 0
-        return Room.objects.filter(**data).order_by(*orders)
-
-
-class RoomListView(LoginRequiredMixin, FormListView):
-    model = Room
-    template_name = "meeting/meeting_list.html"
-    paginate_by = 10
-    context_object_name = "rooms"
-    form_class = SearchRoomForm
-    form2 = ReservationForm
-    template_title = _('Reservation requests')
-
-    def get_queryset(self, **kwargs):
-        queryset = super(RoomListView, self).get_queryset()
+        queryset = Room.objects.filter(**data).order_by(*orders)
         self.update_status(queryset)
         return queryset
 
@@ -80,6 +70,36 @@ class RoomListView(LoginRequiredMixin, FormListView):
         queryset.filter(reservation__isnull=False, status='available')\
             .update(status='reserved')
         return
+
+    def get_reservation_requests(self, request):
+        message = ''
+        reservation_request = ReservationRequest.objects.filter(
+            is_evaluated=False)
+        if reservation_request.exists() and request.user.is_superuser:
+            message = _("You have pending a request reservation request meeting room")
+            messages.add_message(request, messages.SUCCESS, message)
+
+        reservation_request = ReservationRequest.objects.filter(
+            is_evaluated=True, user=request.user)
+
+        for req in reservation_request:
+            message = _("Your request for the {} meeting room has been rejected")
+            if req.is_approved:
+                message = _("Your request for the {} meeting room has been approved")
+            message = message.format(req.reservation.room.name)
+            req.delete()
+            messages.add_message(request, messages.SUCCESS, message)
+        return
+
+
+class RoomListView(LoginRequiredMixin, FormListView):
+    model = Room
+    template_name = "meeting/meeting_list.html"
+    paginate_by = 10
+    context_object_name = "rooms"
+    form_class = SearchRoomForm
+    form2 = ReservationForm
+    template_title = _('Reservation requests')
 
     def get_context_data(self, **kwargs):
         context = super(RoomListView, self).get_context_data(**kwargs)
@@ -391,6 +411,7 @@ class ReservationRequestListView(LoginRequiredMixin, ListView):
     paginate_by = 10
     context_object_name = "reservation_requests"
     template_title = _('Reservation requests')
+    success_url = reverse_lazy('meeting_list')
 
     def get_context_data(self, **kwargs):
         context = super(ReservationRequestListView, self).get_context_data()
@@ -398,4 +419,46 @@ class ReservationRequestListView(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        return self.model.objects.filter().order_by()
+        return self.model.objects.filter(is_evaluated=False).order_by()
+
+    def post(self, request, *args, **kwargs):
+        message = ''
+        reservation_id = request.POST.get('reservation_id')
+        reservation_request = ReservationRequest.objects.get(id=reservation_id)
+        if 'approve' in request.POST:
+            reservation_request.reservation.user = reservation_request.user
+            reservation_request.reservation.save()
+            reservation_request.is_approved = True
+            message = "{} request has been accepted successfully"
+
+        if 'reject' in request.POST:
+            message = "{} request has been rejected successfully"
+        reservation_request.is_evaluated = True
+        reservation_request.save()
+        message = {'message': message.format(reservation_request.user)}
+        return HttpResponse(json.dumps(message), content_type="application/json")
+
+
+class ReservationRequestCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                                   View):
+    model = ReservationRequest
+    success_url = reverse_lazy('meeting_list')
+    success_message = _("The administrator has been notified of your request")
+
+    def get_reservation(self, queryset={}):
+        if queryset:
+            queryset.update({'id': self.kwargs['pk']})
+        obj = Reservation.objects.get(**queryset)
+        return obj
+
+    def get(self, request, *args, **kwargs):
+        return redirect(self.success_url)
+
+    def post(self, request, *args, **kwargs):
+        queryset = self.model.objects.get_or_create(
+            reservation=self.get_reservation(),
+            user=self.request.user
+        )[0]
+        print queryset
+        messages.add_message(request, messages.SUCCESS, self.success_message)
+        return redirect(self.success_url)

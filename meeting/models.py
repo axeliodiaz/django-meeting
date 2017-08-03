@@ -59,8 +59,8 @@ class ReservationRequest(models.Model):
     """(ReservationRequest description)"""
     reservation = models.ForeignKey(Reservation, blank=True, null=True)
     user = models.ForeignKey(User, blank=True, null=True)
-    start = models.TimeField(default=timezone.now)
-    end = models.TimeField(default=timezone.now)
+    is_approved = models.BooleanField(default=False)
+    is_evaluated = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return u"ReservationRequest"
+        return u"{}".format(self.reservation)

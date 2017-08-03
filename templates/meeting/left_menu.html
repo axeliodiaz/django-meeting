@@ -14,8 +14,6 @@
                 <!-- / Search input-group this is only view in mobile-->
             </li>
             <!-- User profile-->
-            <li class="nav-small-cap m-t-10">--- Main Menu</li>
-            <li><a href="javascript:void(0)" class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">Link type </span></a> </li>
             <li>
                 <a class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Room meeting" %}<span class="fa arrow"></span></span></a>
                 <ul class="nav nav-second-level" aria-expanded="false">
@@ -36,7 +34,7 @@
                 <a class="waves-effect"><i class="zmdi zmdi-copy zmdi-hc-fw fa-fw"></i> <span class="hide-menu">{% trans "Reservations" %}<span class="fa arrow"></span></span></a>
                 <ul class="nav nav-second-level" aria-expanded="false">
                     <li><a href="{% url 'reservation_calendar' %}">{% trans "Calendar" %}</a></li>
-                    <li><a href="{% url 'reservation_request_list' %}">{% trans "Reservation requests" %}</a></li>
+                    {% if request.user.is_superuser %}<li><a href="{% url 'reservation_request_list' %}">{% trans "Reservation requests" %}</a></li>{% endif %}
                 </ul>
             </li>
         </ul>

@@ -1,47 +1,32 @@
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-default navbar-static-top m-b-0">
-        <div class="navbar-header">
-            <!-- Toggle icon for mobile view -->
-            <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse"><i class="ti-menu"></i></a>
-            <!-- Logo -->
-            <div class="top-left-part">
-                <a class="logo" href="#">
-                    <h4 class="page-title hidden-xs text-white">Calendar Page</h4>
-                </a>
-            </div>
-            <!-- /Logo -->
-            <!-- Search input and Toggle icon -->
-            <ul class="nav navbar-top-links navbar-left hidden-xs">
-                <li><a href="javascript:void(0)" class="open-close hidden-xs waves-effect waves-light"><i class="icon-arrow-left-circle ti-menu"></i></a></li>
-                <li>
-                    <form role="search" class="app-search hidden-xs">
-                        <input type="text" placeholder="Search..." class="form-control">
-                        <a href="starter-page.html"><i class="fa fa-search"></i></a>
-                    </form>
-                </li>
-            </ul>
-            <!-- This is the message dropdown -->
-            <ul class="nav navbar-top-links navbar-right pull-right">
-
-                <!-- .user dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="starter-page.html#"> <b class="hidden-xs">{{ request.user }} <i class="icon-options-vertical"></i></b> </a>
-                    <ul class="dropdown-menu dropdown-user scale-up">
-                        <li><a href="starter-page.html#"><i class="ti-user"></i> My Profile</a></li>
-                        <li><a href="starter-page.html#"><i class="ti-wallet"></i> My Balance</a></li>
-                        <li><a href="starter-page.html#"><i class="ti-email"></i> Inbox</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="{% url 'admin:index' %}"><i class="ti-settings"></i> Admin Panel</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="{% url 'account_logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
-                    </ul>
-                    <!-- /.user dropdown-user -->
-                </li>
-                <!-- /.user dropdown -->
-            </ul>
+<!-- Top Navigation -->
+<nav class="navbar navbar-default navbar-static-top m-b-0">
+    <div class="navbar-header">
+        <!-- Toggle icon for mobile view -->
+        <a class="navbar-toggle hidden-sm hidden-md hidden-lg color-info" href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse"><i class="ti-menu"></i></a>
+        <!-- Logo -->
+        <div class="top-left-part">
+            <a href="#">
+                <h4 class="page-title hidden-xs text-white pull-right">Django Meeting</h4>
+            </a>
         </div>
-        <!-- /.navbar-header -->
-        <!-- /.navbar-top-links -->
-        <!-- /.navbar-static-side -->
-    </nav>
-    <!-- End Top Navigation -->
+        <!-- /Logo -->
+        <!-- This is the message dropdown -->
+        <ul class="nav navbar-top-links navbar-right pull-right">
+            <!-- .user dropdown -->
+            <li class="dropdown">
+                <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="starter-page.html#"> <b class="hidden-xs">{{ request.user }} <i class="icon-options-vertical"></i></b> </a>
+                <ul class="dropdown-menu dropdown-user scale-up">
+                    <li><a href="{% url 'admin:index' %}"><i class="ti-settings"></i> Admin Panel</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'account_logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
+                </ul>
+                <!-- /.user dropdown-user -->
+            </li>
+            <!-- /.user dropdown -->
+        </ul>
+    </div>
+    <!-- /.navbar-header -->
+    <!-- /.navbar-top-links -->
+    <!-- /.navbar-static-side -->
+</nav>
+<!-- End Top Navigation -->
