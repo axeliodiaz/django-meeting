@@ -13,7 +13,7 @@ from django.template.defaultfilters import urlencode
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
-from .models import Room, Supplie, Reservation
+from .models import Room, Supplie, Reservation, ReservationRequest
 from .forms import RoomForm, SupplieForm, SearchRoomForm, ReservationForm
 
 from braces.views import (LoginRequiredMixin, SuperuserRequiredMixin,
@@ -65,10 +65,26 @@ class RoomListView(LoginRequiredMixin, FormListView):
     context_object_name = "rooms"
     form_class = SearchRoomForm
     form2 = ReservationForm
+    template_title = _('Reservation requests')
+
+    def get_queryset(self, **kwargs):
+        queryset = super(RoomListView, self).get_queryset()
+        self.update_status(queryset)
+        return queryset
+
+    def update_status(self, queryset):
+        queryset = queryset.exclude(status='not available')
+        # update availables
+        queryset.filter(reservation__isnull=True).update(status='available')
+        # update availables
+        queryset.filter(reservation__isnull=False, status='available')\
+            .update(status='reserved')
+        return
 
     def get_context_data(self, **kwargs):
         context = super(RoomListView, self).get_context_data(**kwargs)
         context['second_form'] = self.form2()
+        context['title_page'] = self.template_title
         return context
 
 
@@ -78,6 +94,12 @@ class RoomEditView(SuccessMessageMixin, LoginRequiredMixin,
     form_class = RoomForm
     success_url = reverse_lazy('meeting_list')
     success_message = _("%(name)s was saved successfully.")
+    template_title = _('Meeting Room')
+
+    def get_context_data(self, **kwargs):
+        context = super(RoomEditView, self).get_context_data()
+        context.update({'title_page': self.template_title})
+        return context
 
     def get_object(self, queryset=None):
         obj = Room.objects.get(id=self.kwargs['pk'])
@@ -90,6 +112,12 @@ class RoomCreateView(SuccessMessageMixin, LoginRequiredMixin,
     form_class = RoomForm
     success_url = reverse_lazy('meeting_list')
     success_message = _("%(name)s was created successfully.")
+    template_title = _('Meeting Room')
+
+    def get_context_data(self, **kwargs):
+        context = super(RoomCreateView, self).get_context_data()
+        context.update({'title_page': self.template_title})
+        return context
 
 
 class RoomDeleteView(SuccessMessageMixin, LoginRequiredMixin,
@@ -107,11 +135,15 @@ class SupplieListView(LoginRequiredMixin, ListView):
     template_name = "meeting/supplie_list.html"
     paginate_by = 10
     context_object_name = "supplies"
+    template_title = _('Supplies')
+
+    def get_context_data(self, **kwargs):
+        context = super(SupplieListView, self).get_context_data()
+        context.update({'title_page': self.template_title})
+        return context
 
     def get_queryset(self):
-        return Supplie.objects.filter(
-        ).order_by(
-        )
+        return self.model.objects.filter().order_by()
 
 
 class SupplieEditView(SuccessMessageMixin, LoginRequiredMixin,
@@ -120,6 +152,12 @@ class SupplieEditView(SuccessMessageMixin, LoginRequiredMixin,
     form_class = SupplieForm
     success_url = reverse_lazy('supplie_list')
     success_message = _("%(name)s was saved successfully.")
+    template_title = _('Supplies')
+
+    def get_context_data(self, **kwargs):
+        context = super(SupplieEditView, self).get_context_data()
+        context.update({'title_page': self.template_title})
+        return context
 
     def get_object(self, queryset=None):
         obj = Supplie.objects.get(id=self.kwargs['pk'])
@@ -132,6 +170,12 @@ class SupplieCreateView(SuccessMessageMixin, LoginRequiredMixin,
     form_class = SupplieForm
     success_url = reverse_lazy('supplie_list')
     success_message = _("%(name)s was created successfully.")
+    template_title = _('Supplies')
+
+    def get_context_data(self, **kwargs):
+        context = super(SupplieCreateView, self).get_context_data()
+        context.update({'title_page': self.template_title})
+        return context
 
 
 class SupplieDeleteView(SuccessMessageMixin, LoginRequiredMixin,
@@ -151,9 +195,7 @@ class ReservationListView(LoginRequiredMixin, ListView):
     context_object_name = "reservations"
 
     def get_queryset(self):
-        return Reservation.objects.filter(
-        ).order_by(
-        )
+        return Reservation.objects.filter().order_by()
 
 
 class ReservationEditView(SuccessMessageMixin, LoginRequiredMixin,
@@ -287,6 +329,7 @@ class ReservationCalendarView(LoginRequiredMixin, View):
     model = Reservation
     template_name = "meeting/calendar.html"
     form_class = ReservationForm
+    template_title = _('Calendar meeting')
     success_message = "Reservation saved successfully"
     success_url = reverse_lazy('reservation_calendar')
 
@@ -294,7 +337,7 @@ class ReservationCalendarView(LoginRequiredMixin, View):
         return render(request, self.template_name, self.get_context_data())
 
     def get_context_data(self, **kwargs):
-        context = {'form': self.form_class}
+        context = {'form': self.form_class, 'title_page': self.template_title}
         return context
 
     def post(self, request, *args, **kwargs):
@@ -340,3 +383,19 @@ class ReservationAPIListView(LoginRequiredMixin, JSONDataView):
         context[self.context_object_name] = self.model.objects.filter()
         context['user'] = self.request.user
         return context
+
+
+class ReservationRequestListView(LoginRequiredMixin, ListView):
+    model = ReservationRequest
+    template_name = "meeting/reservation_request_list.html"
+    paginate_by = 10
+    context_object_name = "reservation_requests"
+    template_title = _('Reservation requests')
+
+    def get_context_data(self, **kwargs):
+        context = super(ReservationRequestListView, self).get_context_data()
+        context.update({'title_page': self.template_title})
+        return context
+
+    def get_queryset(self):
+        return self.model.objects.filter().order_by()
