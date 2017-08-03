@@ -16,7 +16,6 @@
     CalendarApp.prototype.onEventClick =  function (calEvent, jsEvent, view) {
         var $this = this;
             var reservation = calEvent.reservation;
-            console.log(reservation);
             var capacity = reservation.capacity;
             var date = reservation.date;
             var start = reservation.start;
@@ -30,7 +29,6 @@
             for (var i = 0; i < reservation.supplie.length; i++) {
                 supplies_selected.push(reservation.supplie[i].id);
             }
-            $("#modal-title").text(reservation.room.name);
             $("#id_room").val(reservation.room.id).trigger('change');
             $("#id_supplie").empty().select2({data: options}).val(supplies_selected).trigger('change');
             $("#id_capacity").val(capacity);
