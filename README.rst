@@ -41,4 +41,4 @@ Create a superuser: ::
 
     ./manage.py createsuperuser
 
-NOTE: The system administrators will be superusers (is_superuser = True). The employees are those users who belong to the staff (is_staff = True)
+NOTE: The system administrators will be superusers (is_superuser = True). The employees are those users who belong to the staff (`is_staff = True`)
