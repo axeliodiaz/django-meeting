@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 ] + MEETING_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -161,10 +162,19 @@ LOGIN_REDIRECT_URL = '/meeting/'
 DATE_FORMAT = "d/m/Y"
 
 # Heroku
+# Update database configuration with $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
-ALLOWED_HOSTS = ["*"]
-MIDDLEWARE = MIDDLEWARE + [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-]
+DATABASES['default']['TEST'] = {'NAME': DATABASES['default']['NAME']}
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
