@@ -5,3 +5,4 @@ django-allauth==0.32.0
 django_braces==1.11.0
 django-generic-json-views==0.8
 dj_database_url==0.4.2
+gunicorn==19.7.1
