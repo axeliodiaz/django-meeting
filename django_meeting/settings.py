@@ -142,6 +142,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
+STATIC_ROOT = 'static/'
+STATIC_URL = '/static/'
 MEDIA_ROOT = 'media/'
 MEDIA_URL = '/media/'
 
@@ -167,17 +169,6 @@ DATABASES['default']['TEST'] = {'NAME': DATABASES['default']['NAME']}
 
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-
-# Extra places for collectstatic to find static files.
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
