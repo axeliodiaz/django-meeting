@@ -164,3 +164,7 @@ DATE_FORMAT = "d/m/Y"
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 ALLOWED_HOSTS = ["*"]
+MIDDLEWARE = MIDDLEWARE + [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
